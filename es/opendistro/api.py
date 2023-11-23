@@ -66,7 +66,7 @@ class Connection(BaseConnection):
             **kwargs,
         )
         if user and password and "aws_keys" not in kwargs:
-            self.es = Elasticsearch(self.url, http_auth=(user, password), **self.kwargs)
+            self.es = Elasticsearch(self.url, basic_auth=(user, password), **self.kwargs)
         # AWS configured credentials on the connection string
         elif user and password and "aws_keys" in kwargs and "aws_region" in kwargs:
             aws_auth = self._aws_auth(user, password, kwargs["aws_region"])
@@ -75,7 +75,7 @@ class Connection(BaseConnection):
 
             self.es = Elasticsearch(
                 self.url,
-                http_auth=aws_auth,
+                basic_auth=aws_auth,
                 connection_class=RequestsHttpConnection,
                 **kwargs,
             )
@@ -84,7 +84,7 @@ class Connection(BaseConnection):
             aws_auth = self._aws_auth_profile(kwargs["aws_profile"])
             self.es = Elasticsearch(
                 self.url,
-                http_auth=aws_auth,
+                basic_auth=aws_auth,
                 connection_class=RequestsHttpConnection,
                 **kwargs,
             )

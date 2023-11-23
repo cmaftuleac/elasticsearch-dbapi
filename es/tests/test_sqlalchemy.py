@@ -182,7 +182,7 @@ class TestSQLAlchemy(unittest.TestCase):
         )
         self.connection = self.engine.connect()
         mock_elasticsearch.assert_called_once_with(
-            "http://localhost:9200/", http_auth=("user", "password")
+            "http://localhost:9200/", basic_auth=("user", "password")
         )
 
     @patch("requests_aws4auth.AWS4Auth.__init__")
@@ -242,7 +242,7 @@ class TestSQLAlchemy(unittest.TestCase):
         )
         self.connection = self.engine.connect()
         mock_elasticsearch.assert_called_once_with(
-            "https://localhost:9200/", http_auth=("user", "password")
+            "https://localhost:9200/", basic_auth=("user", "password")
         )
 
     @patch("elasticsearch.Elasticsearch.__init__")

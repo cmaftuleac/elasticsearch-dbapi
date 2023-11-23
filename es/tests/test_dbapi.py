@@ -206,7 +206,7 @@ class TestDBAPI(unittest.TestCase):
             host="localhost", scheme="http", port=9200, user="user", password="password"
         )
         mock_elasticsearch.assert_called_once_with(
-            "http://localhost:9200/", http_auth=("user", "password")
+            "http://localhost:9200/", basic_auth=("user", "password")
         )
 
     @patch("elasticsearch.Elasticsearch.__init__")
@@ -223,7 +223,7 @@ class TestDBAPI(unittest.TestCase):
             port=9200,
         )
         mock_elasticsearch.assert_called_once_with(
-            "https://localhost:9200/", http_auth=("user", "password")
+            "https://localhost:9200/", basic_auth=("user", "password")
         )
 
     def test_simple_search_with_time_zone(self):

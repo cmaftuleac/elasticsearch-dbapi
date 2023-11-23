@@ -2,6 +2,7 @@ from collections import namedtuple
 from typing import Any, Dict, List, Optional, Tuple
 from urllib import parse
 
+from elastic_transport.client_utils import basic_auth_to_header
 from elasticsearch import Elasticsearch
 from elasticsearch import exceptions as es_exceptions
 from es import exceptions
@@ -123,6 +124,8 @@ class BaseConnection(object):
     ):
         netloc = f"{host}:{port}"
         path = path or "/"
+        self.user = user
+        self.password = password
         self.url = parse.urlunparse((scheme, netloc, path, None, None, None))
         self.context = context or {}
         self.closed = False
@@ -315,7 +318,8 @@ class BaseCursor:
             payload["time_zone"] = self.time_zone
         path = f"/{self.sql_path}/"
         try:
-            response = self.es.transport.perform_request("POST", path, body=payload)
+            basic_auth = basic_auth_to_header((self.user, self.password))
+            response = self.es.transport.perform_request("POST", path, body=payload, headers={"Content-Type": "application/json", 'authorization': basic_auth})
         except es_exceptions.ConnectionError:
             raise exceptions.OperationalError("Error connecting to Elasticsearch")
         except es_exceptions.RequestError as ex:

@@ -62,7 +62,7 @@ class Connection(BaseConnection):
             **kwargs,
         )
         if user and password:
-            self.es = Elasticsearch(self.url, http_auth=(user, password), **self.kwargs)
+            self.es = Elasticsearch(self.url, basic_auth=(user, password), **self.kwargs)
         else:
             self.es = Elasticsearch(self.url, **self.kwargs)
 
@@ -70,7 +70,7 @@ class Connection(BaseConnection):
     def cursor(self) -> BaseCursor:
         """Return a new Cursor Object using the connection."""
         if self.es:
-            cursor = Cursor(self.url, self.es, **self.kwargs)
+            cursor = Cursor(self.url, self.es, self.user, self.password, **self.kwargs)
             self.cursors.append(cursor)
             return cursor
         raise exceptions.UnexpectedESInitError()
@@ -85,8 +85,10 @@ class Cursor(BaseCursor):
         "show valid_views": "get_valid_view_names",
     }
 
-    def __init__(self, url: str, es: Elasticsearch, **kwargs: Any) -> None:
+    def __init__(self, url: str, es: Elasticsearch, user, password, **kwargs: Any) -> None:
         super().__init__(url, es, **kwargs)
+        self.user = user
+        self.password = password
         self.sql_path = kwargs.get("sql_path") or "_sql"
 
     def _get_value_for_col_name(self, row: Tuple[Any], name: str) -> Any:

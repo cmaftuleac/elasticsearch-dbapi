@@ -6,7 +6,7 @@
 #
 certifi==2021.10.8
     # via elasticsearch
-elasticsearch==7.13.4
+elasticsearch==8.9.0
     # via elasticsearch-dbapi (setup.py)
 greenlet==1.0.0
     # via sqlalchemy
