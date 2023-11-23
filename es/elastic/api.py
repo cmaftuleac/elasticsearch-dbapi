@@ -159,8 +159,8 @@ class Cursor(BaseCursor):
         query = apply_parameters(operation, parameters)
         results = self.elastic_query(query)
         # We need a list of tuples
-        rows = [tuple(row) for row in results.get("rows", [])]
-        columns = results.get("columns")
+        rows = [tuple(row) for row in results.body.get("rows", [])]
+        columns = results.body.get("columns")
         if not columns:
             raise exceptions.DataError(
                 "Missing columns field, maybe it's an opendistro sql ep"
