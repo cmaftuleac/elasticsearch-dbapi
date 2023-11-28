@@ -158,6 +158,10 @@ class Cursor(BaseCursor):
 
         query = apply_parameters(operation, parameters)
         results = self.elastic_query(query)
+        if 'error' in results.body:
+            raise exceptions.ProgrammingError(
+                f"Error ({results.body['error']['type']}): {results.body['error']['reason']}"
+            )
         # We need a list of tuples
         rows = [tuple(row) for row in results.body.get("rows", [])]
         columns = results.body.get("columns")
